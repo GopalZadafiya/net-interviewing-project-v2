@@ -1,7 +1,5 @@
-using System.Net;
-using System.Net.Http;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace Insurance.Api.Controllers
 {
