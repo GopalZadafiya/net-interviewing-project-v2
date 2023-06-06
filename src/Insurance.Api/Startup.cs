@@ -1,9 +1,16 @@
+using Insurance.Api.Configuration;
+using Insurance.Application.Interfaces;
+using Insurance.Application.Services;
+using Insurance.Infrastructure.Repositories;
+using Insurance.Infrastructure.Services;
+using Insurance.Infrastructure.Services.ApiClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Net.Http;
 
 namespace Insurance.Api
 {
@@ -20,6 +27,15 @@ namespace Insurance.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddDatabaseConfiguration();
+
+            services.AddSingleton<IApiClient, ApiClient>();
+            services.AddSingleton<HttpClient, HttpClient>();
+            services.AddScoped<IInsuranceService, InsuranceService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ISurchargeRateRepository, SurchargeRateRepository>();
+            services.AddScoped<ISurchargeRateService, SurchargeRateService>();
 
             services.AddSwaggerGen(c =>
               {
