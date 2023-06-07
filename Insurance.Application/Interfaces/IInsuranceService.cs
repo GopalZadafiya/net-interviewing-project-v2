@@ -5,8 +5,18 @@ namespace Insurance.Application.Interfaces
 {
     public interface IInsuranceService
     {
-        Task<ProductInsuranceResponse> GetInsuranceAsync(int productId);
+        /// <summary>
+        /// Calculate amount of insurance for a given product
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<ProductInsuranceResponse> GetInsuranceByProductAsync(int productId);
 
-        Task<OrderInsuranceResponse> GetInsuranceAsync(int[] productIds);
+        /// <summary>
+        /// Calculate amount of insurance for a given order (products in cart)
+        /// </summary>
+        /// <param name="productIds"></param>
+        /// <returns></returns>
+        Task<OrderInsuranceResponse> GetInsuranceByOrderAsync(int[] productIds);
     }
 }

@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Insurance.Application.Services
 {
+    /// <summary>
+    /// Implementation of Insurance calculation business logic
+    /// </summary>
     public class InsuranceService : IInsuranceService
     {
         private readonly IProductService _productService;
@@ -26,25 +29,25 @@ namespace Insurance.Application.Services
             _logger = logger;
         }
 
-        public async Task<ProductInsuranceResponse> GetInsuranceAsync(int productId)
+        /// <inheritdoc />
+        public async Task<ProductInsuranceResponse> GetInsuranceByProductAsync(int productId)
         {
             float totalInsurance = 0;
 
             var product = await _productService.GetProductAsync(productId);
             if (product == null)
             {
-                _logger.LogInformation($"No product found for {productId}");
                 throw new ProductNotFoundException($"No product found for product id: {productId}");
             }
 
             var productType = await _productService.GetProductTypeAsync(product.ProductTypeId);
             if (productType == null)
             {
-                _logger.LogInformation($"No product type found for {product.ProductTypeId}");
                 throw new ProductTypeNotFoundException($"No product type found for product type id: {product.ProductTypeId}");
             }
 
-            if (productType.CanBeInsured) //Should be insured only if product is eligible 
+            //Should be insured only if product is eligible
+            if (productType.CanBeInsured)
             {
                 totalInsurance += InsuranceCalculator.GetBySalesPrice(product.SalesPrice); //Based on price
                 totalInsurance += InsuranceCalculator.GetByProductType(product.ProductTypeId); //Based on product type
@@ -65,7 +68,8 @@ namespace Insurance.Application.Services
             };
         }
 
-        public async Task<OrderInsuranceResponse> GetInsuranceAsync(int[] productIds)
+        /// <inheritdoc />
+        public async Task<OrderInsuranceResponse> GetInsuranceByOrderAsync(int[] productIds)
         {
             if (productIds == null || productIds.Length == 0)
             {
@@ -80,7 +84,7 @@ namespace Insurance.Application.Services
             foreach (var productId in productIds)
             {
                 //Retrieve base insurance
-                var productInsurance = await GetInsuranceAsync(productId);
+                var productInsurance = await GetInsuranceByProductAsync(productId);
                 totalInsurance += productInsurance.InsuranceValue;
 
                 //Populate list of products insurance to check product type
@@ -89,12 +93,17 @@ namespace Insurance.Application.Services
 
             if (DoesOrderContainDigitalCamera(insuranceRequest))
             {
-                totalInsurance += DIGITAL_CAMERA_INSURANCE; //Additional insurance for digital camera
+                totalInsurance += DIGITAL_CAMERA_INSURANCE;
             }
 
             return new OrderInsuranceResponse { TotalInsurance = totalInsurance };
         }
 
+        /// <summary>
+        /// Check if order contains any digital camera 
+        /// </summary>
+        /// <param name="orderDto"></param>
+        /// <returns></returns>
         private static bool DoesOrderContainDigitalCamera(OrderInsuranceRequest orderDto)
         {
             return orderDto.ProductInsurances

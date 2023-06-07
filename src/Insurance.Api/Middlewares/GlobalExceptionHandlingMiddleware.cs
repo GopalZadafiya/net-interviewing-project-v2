@@ -34,48 +34,40 @@ namespace Insurance.Api.Middlewares
         private async Task HandleAsync(HttpContext context, Exception exception)
         {
             HttpStatusCode code;
-            string message;
+            string message = exception.Message;
             var stackTrace = exception.StackTrace;
+            var exceptionResult = JsonSerializer.Serialize(new { error = message });
 
             switch (exception)
             {
                 case ProductNotFoundException:
-                    code = HttpStatusCode.BadRequest;
-                    message = exception.Message;
-                    _logger.LogInformation(exception, message);
+                    code = HttpStatusCode.Conflict;
+                    _logger.LogWarning(exception, message);
                     break;
 
                 case ProductTypeNotFoundException:
-                    code = HttpStatusCode.BadRequest;
-                    message = exception.Message;
+                    code = HttpStatusCode.Conflict;
                     _logger.LogWarning(exception, message);
                     break;
 
                 case BadRequestException:
                     code = HttpStatusCode.BadRequest;
-                    message = exception.Message;
-                    _logger.LogWarning(exception, message);
+                    _logger.LogError(exception, message);
                     break;
 
                 case NotFoundException:
-                    code = HttpStatusCode.BadRequest;
-                    message = exception.Message;
-                    _logger.LogWarning(exception, message);
+                    code = HttpStatusCode.NotFound;
+                    _logger.LogInformation(exception, message);
                     break;
 
-                case ArgumentNullException:
-                    code = HttpStatusCode.BadRequest;
-                    message = $"";
-                    _logger.LogWarning(exception, message);
-                    break;
                 default:
                     code = HttpStatusCode.InternalServerError;
                     message = "Error occurred while processing your request";
+                    exceptionResult = JsonSerializer.Serialize(new { error = message, stackTrace });
                     _logger.LogError(exception, exception.Message);
                     break;
             }
 
-            var exceptionResult = JsonSerializer.Serialize(new { error = message, stackTrace });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
             await context.Response.WriteAsync(exceptionResult);

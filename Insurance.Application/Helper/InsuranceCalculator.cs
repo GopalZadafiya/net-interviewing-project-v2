@@ -2,11 +2,18 @@
 
 namespace Insurance.Application.Helper
 {
+    /// <summary>
+    /// Helper class to calculate insurance amount
+    /// </summary>
     public static class InsuranceCalculator
     {
         private const float DELICATE_INSURANCE_AMOUNT = 500;
 
-
+        /// <summary>
+        /// Get insurance amount by price of product
+        /// </summary>
+        /// <param name="salesPrice"></param>
+        /// <returns></returns>
         public static float GetBySalesPrice(float salesPrice)
         {
             float baseInsurance = 0;
@@ -29,7 +36,11 @@ namespace Insurance.Application.Helper
             return baseInsurance;
         }
 
-
+        /// <summary>
+        /// Get additional insurance amount for specific products
+        /// </summary>
+        /// <param name="productTypeId"></param>
+        /// <returns></returns>
         public static float GetByProductType(int productTypeId)
         {
             float extraInsurance = 0;

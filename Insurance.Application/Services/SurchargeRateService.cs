@@ -2,28 +2,26 @@
 using Insurance.Application.Exceptions;
 using Insurance.Application.Interfaces;
 using Insurance.Domain.Entities;
-using Insurance.Domain.Enums;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace Insurance.Application.Services
 {
+    /// <summary>
+    /// Implementation of surcharge business logic
+    /// </summary>
     public class SurchargeRateService : ISurchargeRateService
     {
         private readonly IProductService _productService;
         private readonly ISurchargeRateRepository _surchargeRateRepository;
-        private readonly ILogger<SurchargeRateService> _logger;
 
         public SurchargeRateService(IProductService productService,
-            ISurchargeRateRepository surchargeRateRepository,
-            ILogger<SurchargeRateService> logger)
+            ISurchargeRateRepository surchargeRateRepository)
         {
             _productService = productService;
             _surchargeRateRepository = surchargeRateRepository;
-            _logger = logger;
         }
 
+        /// <inheritdoc />
         public async Task<SurchargeRateDto> FindByProductTypeAsync(int productTypeId)
         {
             var productType = await _productService.GetProductTypeAsync(productTypeId);
@@ -41,6 +39,7 @@ namespace Insurance.Application.Services
             return new SurchargeRateDto { Value = entity.Value, ProductTypeId = entity.ProductTypeId };
         }
 
+        /// <inheritdoc />
         public async Task<SurchargeRate> CreateAsync(SurchargeRateDto model)
         {
             var productType = await _productService.GetProductTypeAsync(model.ProductTypeId);
@@ -55,9 +54,7 @@ namespace Insurance.Application.Services
                 Value = model.Value
             };
 
-            await _surchargeRateRepository.AddAsync(entity);
-
-            return entity;
+            return await _surchargeRateRepository.CreateAsync(entity);
         }
     }
 }

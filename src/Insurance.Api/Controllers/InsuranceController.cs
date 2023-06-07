@@ -17,30 +17,30 @@ namespace Insurance.Api.Controllers
             _insuranceService = insuranceService;
         }
 
-
+        /// <summary>
+        /// Get product insurance by id 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
         [HttpGet("byProduct/{productId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductInsuranceResponse))]
         public async Task<IActionResult> GetProductInsurance(int productId)
         {
-            var result = await _insuranceService.GetInsuranceAsync(productId);
-            if (result == null)
-            {
-                return NotFound();
-            }
+            var result = await _insuranceService.GetInsuranceByProductAsync(productId);
 
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Get insurance of all products in your order or cart
+        /// </summary>
+        /// <param name="productIds"></param>
+        /// <returns></returns>
         [HttpPost("byOrder")]
         public async Task<IActionResult> GetOrderInsurance([FromBody] int[] productIds)
         {
-            var result = await _insuranceService.GetInsuranceAsync(productIds);
-            if (result == null)
-            {
-                return NotFound();
-            }
-
+            var result = await _insuranceService.GetInsuranceByOrderAsync(productIds);
+            
             return Ok(result);
         }
     }

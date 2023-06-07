@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Insurance.Application.Dto;
+﻿using Insurance.Application.Dto;
 using Insurance.Application.Exceptions;
 using Insurance.Application.Interfaces;
 using Insurance.Application.Services;
@@ -32,7 +31,6 @@ namespace Insurance.Tests.Services
                 _loggerMock.Object);
         }
 
-
         [Fact]
         public async Task GetInsuranceAsync_ShouldReturn_WhenProductIsNotFound()
         {
@@ -42,7 +40,7 @@ namespace Insurance.Tests.Services
                 .Setup(x => x.GetProductAsync(It.IsAny<int>()));
 
             //Act & Assert
-            await Assert.ThrowsAsync<ProductNotFoundException>(async () => await _sut.GetInsuranceAsync(productId));
+            await Assert.ThrowsAsync<ProductNotFoundException>(async () => await _sut.GetInsuranceByProductAsync(productId));
         }
 
         [Fact]
@@ -58,7 +56,7 @@ namespace Insurance.Tests.Services
                 .Setup(x => x.GetProductTypeAsync(It.IsAny<int>()));
 
             //Act & Assert
-            await Assert.ThrowsAsync<ProductTypeNotFoundException>(async () => await _sut.GetInsuranceAsync(productId));
+            await Assert.ThrowsAsync<ProductTypeNotFoundException>(async () => await _sut.GetInsuranceByProductAsync(productId));
         }
 
         [Fact]
@@ -76,12 +74,11 @@ namespace Insurance.Tests.Services
                 .ReturnsAsync(GetProductType(productId, false));
 
             //Act
-            var result = await _sut.GetInsuranceAsync(productId);
+            var result = await _sut.GetInsuranceByProductAsync(productId);
 
             //Assert
             result.Equals(0);
         }
-
 
         [Theory]
         [InlineData(0, (int)ProductTypes.Laptops, 0, 500)]
@@ -105,12 +102,11 @@ namespace Insurance.Tests.Services
             SetUpProductServices(salesPrice, productTypeId, surchargeRate, canBeInsured);
 
             //Act
-            var result = await _sut.GetInsuranceAsync(It.IsAny<int>());
+            var result = await _sut.GetInsuranceByProductAsync(It.IsAny<int>());
 
             //Assert
             Assert.Equal(expectedInsurance, result.InsuranceValue);
         }
-
 
         [Theory]
         [InlineData(320, (int)ProductTypes.WashingMachines, 340, 680)]
@@ -126,7 +122,7 @@ namespace Insurance.Tests.Services
             SetUpProductServices(salesPrice, productTypeId, surchargeRate, canBeInsured);
 
             //Act
-            var result = await _sut.GetInsuranceAsync(new int[] { 1, 2 });
+            var result = await _sut.GetInsuranceByOrderAsync(new int[] { 1, 2 });
 
             //Assert
             Assert.Equal(expectedInsurance, result.TotalInsurance);

@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Insurance.Api.Controllers;
+﻿using Insurance.Api.Controllers;
 using Insurance.Application.Dto;
 using Insurance.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;

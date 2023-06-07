@@ -25,19 +25,11 @@ namespace Insurance.Infrastructure.Repositories
                 .FirstOrDefaultAsync(s => s.ProductTypeId == productTypeId);
         }
 
-        public async Task<SurchargeRate> AddAsync(SurchargeRate entity)
+        public async Task<SurchargeRate> CreateAsync(SurchargeRate entity)
         {
-            try
-            {                
-                await _dbContext.AddAsync(entity);
-                await _dbContext.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Failed to add surcharge rate - {ex.Message}\n{ex.StackTrace}");
-                return null;
-            }
+            await _dbContext.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }
