@@ -1,4 +1,5 @@
 ﻿using Insurance.Application.Dto;
+using Insurance.Application.Exceptions;
 using Insurance.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -20,12 +21,6 @@ namespace Insurance.Api.Controllers
         public async Task<IActionResult> GetAsync(int id)
         {
             var result = await _surchargeRateService.FindByProductTypeAsync(id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
             return Ok(result);
         }
 

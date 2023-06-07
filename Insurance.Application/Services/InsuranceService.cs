@@ -1,4 +1,5 @@
 ﻿using Insurance.Application.Dto;
+using Insurance.Application.Exceptions;
 using Insurance.Application.Helper;
 using Insurance.Application.Interfaces;
 using Insurance.Domain.Enums;
@@ -16,7 +17,7 @@ namespace Insurance.Application.Services
 
         private const float DIGITAL_CAMERA_INSURANCE = 500;
 
-        public InsuranceService(IProductService productService, 
+        public InsuranceService(IProductService productService,
             ISurchargeRateService surchargeRateService,
             ILogger<InsuranceService> logger)
         {
@@ -33,14 +34,14 @@ namespace Insurance.Application.Services
             if (product == null)
             {
                 _logger.LogInformation($"No product found for {productId}");
-                return new ProductInsuranceResponse();
+                throw new ProductNotFoundException($"No product found for product id: {productId}");
             }
 
             var productType = await _productService.GetProductTypeAsync(product.ProductTypeId);
             if (productType == null)
             {
                 _logger.LogInformation($"No product type found for {product.ProductTypeId}");
-                return new ProductInsuranceResponse();
+                throw new ProductTypeNotFoundException($"No product type found for product type id: {product.ProductTypeId}");
             }
 
             if (productType.CanBeInsured) //Should be insured only if product is eligible 
@@ -66,6 +67,12 @@ namespace Insurance.Application.Services
 
         public async Task<OrderInsuranceResponse> GetInsuranceAsync(int[] productIds)
         {
+            if (productIds == null || productIds.Length == 0)
+            {
+                _logger.LogWarning($"No valid products in your order");
+                throw new BadRequestException($"No valid products in your order");
+            }
+
             float totalInsurance = 0;
 
             var insuranceRequest = new OrderInsuranceRequest();

@@ -68,7 +68,7 @@ namespace Insurance.Tests.Controllers
             var result = await _sut.GetOrderInsurance(It.IsAny<int[]>());
 
             //Assert
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<NotFoundResult>();
         }
 
 

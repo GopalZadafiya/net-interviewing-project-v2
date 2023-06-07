@@ -1,4 +1,6 @@
-﻿using Insurance.Application.Dto;
+﻿using FluentAssertions;
+using Insurance.Application.Dto;
+using Insurance.Application.Exceptions;
 using Insurance.Application.Interfaces;
 using Insurance.Application.Services;
 using Insurance.Domain.Entities;
@@ -39,11 +41,8 @@ namespace Insurance.Tests.Services
             _productServiceMock
                 .Setup(x => x.GetProductAsync(It.IsAny<int>()));
 
-            //Act
-            var result = await _sut.GetInsuranceAsync(productId);
-
-            //Assert
-            result.Equals(0);
+            //Act & Assert
+            await Assert.ThrowsAsync<ProductNotFoundException>(async () => await _sut.GetInsuranceAsync(productId));
         }
 
         [Fact]
@@ -57,11 +56,9 @@ namespace Insurance.Tests.Services
 
             _productServiceMock
                 .Setup(x => x.GetProductTypeAsync(It.IsAny<int>()));
-            //Act
-            var result = await _sut.GetInsuranceAsync(productId);
 
-            //Assert
-            result.Equals(0);
+            //Act & Assert
+            await Assert.ThrowsAsync<ProductTypeNotFoundException>(async () => await _sut.GetInsuranceAsync(productId));
         }
 
         [Fact]

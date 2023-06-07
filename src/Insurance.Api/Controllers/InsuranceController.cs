@@ -35,11 +35,6 @@ namespace Insurance.Api.Controllers
         [HttpPost("byOrder")]
         public async Task<IActionResult> GetOrderInsurance([FromBody] int[] productIds)
         {
-            if (productIds == null || productIds.Length == 0)
-            {
-                return BadRequest();
-            }
-
             var result = await _insuranceService.GetInsuranceAsync(productIds);
             if (result == null)
             {

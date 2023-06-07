@@ -20,7 +20,9 @@ namespace Insurance.Infrastructure.Services.ApiClient
         public async Task<T> GetAsync<T>(string apiUrl)
         {
             if (string.IsNullOrWhiteSpace(apiUrl))
+            {
                 throw new ArgumentNullException(nameof(apiUrl));
+            }
 
             T result = default;
 
@@ -42,7 +44,7 @@ namespace Insurance.Infrastructure.Services.ApiClient
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Cannot Connect or call Api {ex.Message}\n{ex.StackTrace}");
+                _logger.LogError(ex, $"Failed to call Api {ex.Message}\n{ex.StackTrace}");
             }
 
             return result;

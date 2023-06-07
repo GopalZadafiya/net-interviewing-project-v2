@@ -1,4 +1,5 @@
 using Insurance.Api.Configuration;
+using Insurance.Api.Middlewares;
 using Insurance.Application.Interfaces;
 using Insurance.Application.Services;
 using Insurance.Infrastructure.Repositories;
@@ -53,6 +54,8 @@ namespace Insurance.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

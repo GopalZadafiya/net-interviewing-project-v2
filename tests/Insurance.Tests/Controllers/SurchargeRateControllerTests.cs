@@ -21,20 +21,6 @@ namespace Insurance.Tests.Controllers
             _sut = new SurchargeRateController(_surchargeRateServiceMock.Object);
         }
 
-
-        [Fact]
-        public async Task GetAsync_ShouldReturn_NotFound_ForNonExisting_ProductType()
-        {
-            //Arrange
-            _surchargeRateServiceMock.Setup(s => s.FindByProductTypeAsync(It.IsAny<int>()));
-
-            //Act
-            var result = await _sut.GetAsync(It.IsAny<int>());
-
-            //Assert
-            result.Should().BeOfType<NotFoundResult>();
-        }
-
         [Fact]
         public async Task GetAsync_Should_Return_SurchargeRate_WhenValidProductTypeProvided()
         {
